@@ -1,0 +1,7 @@
+install:
+    - make all install
+    - sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf
+
+script:
+    - getent hosts badger.docker
+    - getent hosts 10.0.0.0
