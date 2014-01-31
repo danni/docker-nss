@@ -1,3 +1,5 @@
+language: c
+
 install:
     - make all install
     - sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf

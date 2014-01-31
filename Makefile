@@ -2,7 +2,7 @@ DESTDIR ?=
 NSSDIR ?= /usr/lib
 
 CC = gcc
-CFLAGS = -Wall -Werror -ggdb `pkg-config --cflags glib-2.0`
+CFLAGS = -fPIC -Wall -Werror -ggdb `pkg-config --cflags glib-2.0`
 LDFLAGS = `pkg-config --libs glib-2.0`
 
 OBJS = \
@@ -14,7 +14,7 @@ BINS = \
 	$(MODULE)
 
 $(MODULE): $(OBJS)
-	$(CC) $(LDFLAGS) -shared -o $@ -Wl,-soname,$@ $<
+	$(CC) $(LDFLAGS) -fPIC -shared -o $@ -Wl,-soname,$@ $<
 
 all: $(BINS)
 
