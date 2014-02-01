@@ -17,6 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <errno.h>
 #include <glib.h>
 #include <netdb.h>
 #include <arpa/inet.h>
@@ -43,6 +44,74 @@ test_gethostbyname (void)
     g_assert_cmpstr(buffer, ==, "65.65.65.65");
 }
 
+static void
+test_gethostbyname_not_docker (void)
+{
+    struct hostent *results;
+
+    results = gethostbyname("badger");
+
+    g_assert(results == NULL);
+    g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
+}
+
+static void
+test_gethostbyname2 (void)
+{
+    struct hostent *results;
+    char buffer[INET_ADDRSTRLEN];
+
+    results = gethostbyname2("badger.docker", AF_INET);
+
+    g_assert(results != NULL);
+
+    g_assert_cmpstr(results->h_name, ==, "badger.docker");
+    g_assert(results->h_aliases[0] == NULL);
+    g_assert_cmpint(results->h_addrtype, ==, AF_INET);
+    g_assert_cmpint(results->h_length, ==, 4);
+    g_assert(results->h_addr_list[0] != NULL);
+    g_assert(results->h_addr_list[1] == NULL);
+
+    inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
+    g_assert_cmpstr(buffer, ==, "65.65.65.65");
+}
+
+static void
+test_gethostbyname2_inet6 (void)
+{
+    struct hostent *results;
+
+    results = gethostbyname2("badger.docker", AF_INET6);
+
+    g_assert(results == NULL);
+    g_assert_cmpint(errno, ==, EAFNOSUPPORT);
+    g_assert_cmpint(h_errno, ==, NO_DATA);
+}
+
+static void
+test_gethostbyaddr (void)
+{
+    struct hostent *results;
+    struct in_addr addr;
+    char buffer[INET_ADDRSTRLEN];
+
+    inet_pton(AF_INET, "10.0.0.0", &addr);
+
+    results = gethostbyaddr(&addr, 4, AF_INET);
+
+    g_assert (results != NULL);
+
+    g_assert_cmpstr(results->h_name, ==, "container.docker");
+    g_assert(results->h_aliases[0] == NULL);
+    g_assert_cmpint(results->h_addrtype, ==, AF_INET);
+    g_assert_cmpint(results->h_length, ==, 4);
+    g_assert(results->h_addr_list[0] != NULL);
+    g_assert(results->h_addr_list[1] == NULL);
+
+    inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
+    g_assert_cmpstr(buffer, ==, "10.0.0.0");
+}
+
 int
 main (int argc,
         char **argv)
@@ -50,6 +119,11 @@ main (int argc,
     g_test_init (&argc, &argv, NULL);
 
     g_test_add_func("/test/gethostbyname", test_gethostbyname);
+    g_test_add_func("/test/gethostbyname_not_docker",
+            test_gethostbyname_not_docker);
+    g_test_add_func("/test/gethostbyname2", test_gethostbyname2);
+    g_test_add_func("/test/gethostbyname2_inet6", test_gethostbyname2_inet6);
+    g_test_add_func("/test/gethostbyaddr", test_gethostbyaddr);
 
     return g_test_run ();
 }
