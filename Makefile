@@ -15,13 +15,13 @@ BINS = \
 	test
 
 $(MODULE): $(OBJS) Makefile
-	$(CC) $(LDFLAGS) -fPIC -shared -o $@ -Wl,-soname,$@ $<
+	$(CC) -fPIC -shared -o $@ -Wl,-soname,$@ $< $(LDFLAGS)
 
 TEST_OBJS = \
 	test.o
 
 test: $(TEST_OBJS) $(MODULE) Makefile
-	$(CC) $(LDFLAGS) -o $@ $<
+	$(CC) -o $@ $< $(LDFLAGS)
 
 all: $(BINS)
 
