@@ -11,10 +11,17 @@ OBJS = \
 MODULE = libnss_docker.so.2
 
 BINS = \
-	$(MODULE)
+	$(MODULE) \
+	test
 
-$(MODULE): $(OBJS)
+$(MODULE): $(OBJS) Makefile
 	$(CC) $(LDFLAGS) -fPIC -shared -o $@ -Wl,-soname,$@ $<
+
+TEST_OBJS = \
+	test.o
+
+test: $(TEST_OBJS) $(MODULE) Makefile
+	$(CC) $(LDFLAGS) -o $@ $<
 
 all: $(BINS)
 
