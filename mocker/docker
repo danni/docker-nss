@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# A fake docker binary for use in testing
+
+echo "172.11.22.33"

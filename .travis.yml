@@ -7,5 +7,9 @@ install:
     - |
         sudo sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf
 
+# add our fake docker client to the path
+before_script:
+    - export PATH=`pwd`/mocker:$PATH
+
 script:
     - valgrind --leak-check=full --error-exitcode=2 --suppressions=valgrind.supp ./test

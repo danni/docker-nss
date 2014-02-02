@@ -23,6 +23,8 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 
+#define BADGER_DOCKER_IP "172.11.22.33"
+
 static void
 test_gethostbyname (void)
 {
@@ -41,7 +43,7 @@ test_gethostbyname (void)
     g_assert(results->h_addr_list[1] == NULL);
 
     inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
-    g_assert_cmpstr(buffer, ==, "65.65.65.65");
+    g_assert_cmpstr(buffer, ==, BADGER_DOCKER_IP);
 }
 
 static void
@@ -73,7 +75,7 @@ test_gethostbyname2 (void)
     g_assert(results->h_addr_list[1] == NULL);
 
     inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
-    g_assert_cmpstr(buffer, ==, "65.65.65.65");
+    g_assert_cmpstr(buffer, ==, BADGER_DOCKER_IP);
 }
 
 static void
