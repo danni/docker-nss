@@ -1,10 +1,11 @@
 language: c
 
 install:
+    - sudo apt-get install valgrind
     - make all
     - sudo make install
     - |
         sudo sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf
 
 script:
-    - ./test
+    - valgrind --leak-check=full --error-exitcode=2 --suppressions=valgrind.supp ./test

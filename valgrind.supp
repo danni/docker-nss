@@ -1,0 +1,45 @@
+{
+    GTest leaks
+    Memcheck:Leak
+    ...
+    fun:g_strdup
+    fun:g_test_get_root
+}
+
+{
+    GTest leaks 2
+    Memcheck:Leak
+    ...
+    fun:g_strdup
+    fun:g_test_create_suite
+}
+
+{
+    GTest leaks 3
+    Memcheck:Leak
+    ...
+    fun:g_strdup
+    fun:g_test_create_case
+}
+
+{
+    GTest leaks 3.1
+    Memcheck:Leak
+    ...
+    fun:g_slice_alloc0
+    fun:g_test_create_case
+}
+
+{
+    GTest leaks 4
+    Memcheck:Leak
+    ...
+    fun:g_test_init
+}
+
+{
+    GRandom leaks
+    Memcheck:Leak
+    ...
+    fun:g_rand_new
+}

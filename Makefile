@@ -30,6 +30,6 @@ install: all
 	install -m 0644 $(MODULE) $(DESTDIR)$(NSSDIR)/$(MODULE)
 
 clean:
-	rm -f $(BINS) $(OBJS)
+	rm -f $(BINS) $(OBJS) $(TEST_OBJS)
 
 .PHONY: all install clean
