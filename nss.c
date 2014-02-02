@@ -201,7 +201,13 @@ _nss_docker_gethostbyaddr_r (const void *addr,
         return NSS_STATUS_UNAVAIL;
       }
 
+    /* FIXME: need to implement reverse lookups */
+    *errnop = EAFNOSUPPORT;
+    *h_errnop = NO_DATA;
+    return NSS_STATUS_UNAVAIL;
+    /*
     pack_hostent(result, buffer, buflen, "container.docker", addr);
 
     return NSS_STATUS_SUCCESS;
+    */
 }

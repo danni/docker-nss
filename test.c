@@ -90,6 +90,7 @@ test_gethostbyname2_inet6 (void)
     g_assert_cmpint(h_errno, ==, NO_DATA);
 }
 
+# if 0
 static void
 test_gethostbyaddr (void)
 {
@@ -113,6 +114,7 @@ test_gethostbyaddr (void)
     inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
     g_assert_cmpstr(buffer, ==, "10.0.0.0");
 }
+# endif
 
 int
 main (int argc,
@@ -125,7 +127,7 @@ main (int argc,
             test_gethostbyname_not_docker);
     g_test_add_func("/test/gethostbyname2", test_gethostbyname2);
     g_test_add_func("/test/gethostbyname2_inet6", test_gethostbyname2_inet6);
-    g_test_add_func("/test/gethostbyaddr", test_gethostbyaddr);
+    // g_test_add_func("/test/gethostbyaddr", test_gethostbyaddr);
 
     return g_test_run ();
 }
