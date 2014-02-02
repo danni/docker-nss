@@ -58,6 +58,28 @@ test_gethostbyname_not_docker (void)
 }
 
 static void
+test_gethostbyname_by_image_name (void)
+{
+    struct hostent *results;
+
+    results = gethostbyname("stoat.docker");
+
+    g_assert(results == NULL);
+    g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
+}
+
+static void
+test_gethostbyname_unknown_name (void)
+{
+    struct hostent *results;
+
+    results = gethostbyname("mushroom.docker");
+
+    g_assert(results == NULL);
+    g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
+}
+
+static void
 test_gethostbyname2 (void)
 {
     struct hostent *results;
@@ -125,6 +147,10 @@ main (int argc,
     g_test_add_func("/test/gethostbyname", test_gethostbyname);
     g_test_add_func("/test/gethostbyname_not_docker",
             test_gethostbyname_not_docker);
+    g_test_add_func("/test/gethostbyname_by_image_name",
+            test_gethostbyname_by_image_name);
+    g_test_add_func("/test/gethostbyname_unknown_name",
+            test_gethostbyname_unknown_name);
     g_test_add_func("/test/gethostbyname2", test_gethostbyname2);
     g_test_add_func("/test/gethostbyname2_inet6", test_gethostbyname2_inet6);
     // g_test_add_func("/test/gethostbyaddr", test_gethostbyaddr);

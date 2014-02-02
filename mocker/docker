@@ -2,4 +2,22 @@
 
 # A fake docker binary for use in testing
 
-echo "172.11.22.33"
+IP_LOOKUP="-format={{.NetworkSettings.IPAddress}}"
+
+case "$@" in
+    # a container which exists
+    "inspect $IP_LOOKUP badger")
+        echo "172.11.22.33"
+        exit 0
+        ;;
+    # an image name, this does not have an IP address
+    "inspect $IP_LOOKUP stoat")
+        echo "<no value>"
+        exit 0
+        ;;
+    # a complete unknown container
+    "inspect $IP_LOOKUP mushroom")
+        echo "Error: No such image or container: mushroom" >&2
+        exit 1
+        ;;
+esac
