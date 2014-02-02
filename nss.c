@@ -75,6 +75,54 @@ pack_hostent(struct hostent *result,
     result->h_addr_list = (char **) addrlist;
 }
 
+static gboolean
+lookup_container_ip (const char *name,
+        struct in_addr *addr)
+{
+    char *stdout_s, *name_s;
+    int exit_status;
+    gboolean success = FALSE;
+
+    /* remove the suffix */
+    name_s = g_strdup (name);
+    *strrchr(name_s, '.') = '\0';
+
+    char *argv[] = {
+        "docker",
+        "inspect",
+        "-format={{.NetworkSettings.IPAddress}}",
+        name_s,
+        NULL,
+    };
+
+    if (!g_spawn_sync(NULL,
+               argv,
+               NULL,
+               G_SPAWN_STDERR_TO_DEV_NULL | G_SPAWN_SEARCH_PATH,
+               NULL, NULL,
+               &stdout_s, NULL,
+               &exit_status,
+               NULL))
+      {
+          goto finally;
+      }
+
+    if (exit_status != 0)
+      {
+        goto finally;
+      }
+
+    stdout_s = g_strstrip (stdout_s);
+    success = inet_aton (stdout_s, addr);
+
+finally:
+
+    g_free (name_s);
+    g_free (stdout_s);
+
+    return success;
+}
+
 enum nss_status
 _nss_docker_gethostbyname2_r (const char *name,
         int af,
@@ -84,6 +132,8 @@ _nss_docker_gethostbyname2_r (const char *name,
         int *errnop,
         int *h_errnop)
 {
+    struct in_addr addr;
+
     if (af != AF_INET)
       {
         *errnop = EAFNOSUPPORT;
@@ -98,7 +148,14 @@ _nss_docker_gethostbyname2_r (const char *name,
         return NSS_STATUS_NOTFOUND;
       }
 
-    pack_hostent(result, buffer, buflen, name, "AAAA");
+    if (!lookup_container_ip (name, &addr))
+      {
+        *errnop = ENOENT;
+        *h_errnop = HOST_NOT_FOUND;
+        return NSS_STATUS_NOTFOUND;
+      }
+
+    pack_hostent(result, buffer, buflen, name, &addr);
 
     return NSS_STATUS_SUCCESS;
 }
