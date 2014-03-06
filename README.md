@@ -8,8 +8,10 @@ This is still a work in progress!
 Installing
 ==========
 
-    # make all install
-    # sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf
+    git clone git@github.com:danni/docker-nss.git
+    cd docker-nss
+    sudo make all install
+    sudo sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf
 
 or edit `/etc/nsswitch.conf`:
 
