@@ -17,6 +17,12 @@ or edit `/etc/nsswitch.conf`:
 
     hosts:      files dns mdns4_minimal myhostname docker
                                                    ^
+
+## Dependencies
+
+* libglib2.0-dev
+
+
 Testing
 =======
 
