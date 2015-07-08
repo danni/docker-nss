@@ -88,7 +88,7 @@ lookup_container_ip (const char *name,
     *strrchr(name_s, '.') = '\0';
 
     char *argv[] = {
-        "docker",
+        "/usr/bin/docker",
         "inspect",
         "-format={{.NetworkSettings.IPAddress}}",
         name_s,
