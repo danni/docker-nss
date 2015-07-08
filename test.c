@@ -25,79 +25,85 @@
 
 #define BADGER_DOCKER_IP "172.11.22.33"
 
-static void test_gethostbyname(void) {
-  struct hostent *results;
-  char buffer[INET_ADDRSTRLEN];
+static void test_gethostbyname(void)
+{
+    struct hostent* results;
+    char buffer[INET_ADDRSTRLEN];
 
-  results = gethostbyname("badger.docker");
+    results = gethostbyname("badger.docker");
 
-  g_assert(results != NULL);
+    g_assert(results != NULL);
 
-  g_assert_cmpstr(results->h_name, ==, "badger.docker");
-  g_assert(results->h_aliases[0] == NULL);
-  g_assert_cmpint(results->h_addrtype, ==, AF_INET);
-  g_assert_cmpint(results->h_length, ==, 4);
-  g_assert(results->h_addr_list[0] != NULL);
-  g_assert(results->h_addr_list[1] == NULL);
+    g_assert_cmpstr(results->h_name, ==, "badger.docker");
+    g_assert(results->h_aliases[0] == NULL);
+    g_assert_cmpint(results->h_addrtype, ==, AF_INET);
+    g_assert_cmpint(results->h_length, ==, 4);
+    g_assert(results->h_addr_list[0] != NULL);
+    g_assert(results->h_addr_list[1] == NULL);
 
-  inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
-  g_assert_cmpstr(buffer, ==, BADGER_DOCKER_IP);
+    inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
+    g_assert_cmpstr(buffer, ==, BADGER_DOCKER_IP);
 }
 
-static void test_gethostbyname_not_docker(void) {
-  struct hostent *results;
+static void test_gethostbyname_not_docker(void)
+{
+    struct hostent* results;
 
-  results = gethostbyname("badger");
+    results = gethostbyname("badger");
 
-  g_assert(results == NULL);
-  g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
+    g_assert(results == NULL);
+    g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
 }
 
-static void test_gethostbyname_by_image_name(void) {
-  struct hostent *results;
+static void test_gethostbyname_by_image_name(void)
+{
+    struct hostent* results;
 
-  results = gethostbyname("stoat.docker");
+    results = gethostbyname("stoat.docker");
 
-  g_assert(results == NULL);
-  g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
+    g_assert(results == NULL);
+    g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
 }
 
-static void test_gethostbyname_unknown_name(void) {
-  struct hostent *results;
+static void test_gethostbyname_unknown_name(void)
+{
+    struct hostent* results;
 
-  results = gethostbyname("mushroom.docker");
+    results = gethostbyname("mushroom.docker");
 
-  g_assert(results == NULL);
-  g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
+    g_assert(results == NULL);
+    g_assert_cmpint(h_errno, ==, HOST_NOT_FOUND);
 }
 
-static void test_gethostbyname2(void) {
-  struct hostent *results;
-  char buffer[INET_ADDRSTRLEN];
+static void test_gethostbyname2(void)
+{
+    struct hostent* results;
+    char buffer[INET_ADDRSTRLEN];
 
-  results = gethostbyname2("badger.docker", AF_INET);
+    results = gethostbyname2("badger.docker", AF_INET);
 
-  g_assert(results != NULL);
+    g_assert(results != NULL);
 
-  g_assert_cmpstr(results->h_name, ==, "badger.docker");
-  g_assert(results->h_aliases[0] == NULL);
-  g_assert_cmpint(results->h_addrtype, ==, AF_INET);
-  g_assert_cmpint(results->h_length, ==, 4);
-  g_assert(results->h_addr_list[0] != NULL);
-  g_assert(results->h_addr_list[1] == NULL);
+    g_assert_cmpstr(results->h_name, ==, "badger.docker");
+    g_assert(results->h_aliases[0] == NULL);
+    g_assert_cmpint(results->h_addrtype, ==, AF_INET);
+    g_assert_cmpint(results->h_length, ==, 4);
+    g_assert(results->h_addr_list[0] != NULL);
+    g_assert(results->h_addr_list[1] == NULL);
 
-  inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
-  g_assert_cmpstr(buffer, ==, BADGER_DOCKER_IP);
+    inet_ntop(AF_INET, results->h_addr_list[0], buffer, INET_ADDRSTRLEN);
+    g_assert_cmpstr(buffer, ==, BADGER_DOCKER_IP);
 }
 
-static void test_gethostbyname2_inet6(void) {
-  struct hostent *results;
+static void test_gethostbyname2_inet6(void)
+{
+    struct hostent* results;
 
-  results = gethostbyname2("badger.docker", AF_INET6);
+    results = gethostbyname2("badger.docker", AF_INET6);
 
-  g_assert(results == NULL);
-  g_assert_cmpint(errno, ==, EAFNOSUPPORT);
-  g_assert_cmpint(h_errno, ==, NO_DATA);
+    g_assert(results == NULL);
+    g_assert_cmpint(errno, ==, EAFNOSUPPORT);
+    g_assert_cmpint(h_errno, ==, NO_DATA);
 }
 
 #if 0
@@ -126,19 +132,20 @@ test_gethostbyaddr (void)
 }
 #endif
 
-int main(int argc, char **argv) {
-  g_test_init(&argc, &argv, NULL);
+int main(int argc, char** argv)
+{
+    g_test_init(&argc, &argv, NULL);
 
-  g_test_add_func("/test/gethostbyname", test_gethostbyname);
-  g_test_add_func("/test/gethostbyname_not_docker",
-                  test_gethostbyname_not_docker);
-  g_test_add_func("/test/gethostbyname_by_image_name",
-                  test_gethostbyname_by_image_name);
-  g_test_add_func("/test/gethostbyname_unknown_name",
-                  test_gethostbyname_unknown_name);
-  g_test_add_func("/test/gethostbyname2", test_gethostbyname2);
-  g_test_add_func("/test/gethostbyname2_inet6", test_gethostbyname2_inet6);
-  // g_test_add_func("/test/gethostbyaddr", test_gethostbyaddr);
+    g_test_add_func("/test/gethostbyname", test_gethostbyname);
+    g_test_add_func("/test/gethostbyname_not_docker",
+                    test_gethostbyname_not_docker);
+    g_test_add_func("/test/gethostbyname_by_image_name",
+                    test_gethostbyname_by_image_name);
+    g_test_add_func("/test/gethostbyname_unknown_name",
+                    test_gethostbyname_unknown_name);
+    g_test_add_func("/test/gethostbyname2", test_gethostbyname2);
+    g_test_add_func("/test/gethostbyname2_inet6", test_gethostbyname2_inet6);
+    // g_test_add_func("/test/gethostbyaddr", test_gethostbyaddr);
 
-  return g_test_run();
+    return g_test_run();
 }
