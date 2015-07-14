@@ -3,6 +3,7 @@ NSSDIR ?= /usr/lib
 BINDIR ?= /usr/bin
 
 
+STRIP = strip
 CC = gcc
 CFLAGS = -fPIC -Wall -Werror -ggdb `pkg-config --cflags glib-2.0`
 LDFLAGS = `pkg-config --libs glib-2.0`
@@ -30,6 +31,7 @@ test: $(TEST_OBJS) $(MODULE) Makefile
 
 inspect: $(INSPECT_OBJS) $(MODULE) Makefile
 	$(CC) -o $@ $<
+	$(STRIP) $@
 
 all: $(BINS)
 
