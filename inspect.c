@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <string.h>
+#include <stdio.h>
 
 int main(int argc, char** argv)
 {
@@ -8,5 +9,6 @@ int main(int argc, char** argv)
         const char* myargs[] = { "/usr/bin/docker", "inspect", "--format={{.NetworkSettings.IPAddress}}", argv[1] };
         return execlp(myargs[0], myargs[0], myargs[1], myargs[2], myargs[3], NULL);
     }
-    return 0;
+    printf("usage: %s <container>\n", argv[0]);
+    return 1;
 }
