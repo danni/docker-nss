@@ -1,5 +1,7 @@
 DESTDIR ?=
 NSSDIR ?= /usr/lib
+BINDIR ?= /usr/bin
+
 
 CC = gcc
 CFLAGS = -fPIC -Wall -Werror -ggdb `pkg-config --cflags glib-2.0`
@@ -12,7 +14,7 @@ MODULE = libnss_docker.so.2
 
 BINS = \
 	$(MODULE) \
-	test
+	test inspect
 
 $(MODULE): $(OBJS) Makefile
 	$(CC) -fPIC -shared -o $@ -Wl,-soname,$@ $< $(LDFLAGS)
@@ -20,14 +22,21 @@ $(MODULE): $(OBJS) Makefile
 TEST_OBJS = \
 	test.o
 
+INSPECT_OBJS = \
+	inspect.o
+
 test: $(TEST_OBJS) $(MODULE) Makefile
 	$(CC) -o $@ $< $(LDFLAGS)
+
+inspect: $(INSPECT_OBJS) $(MODULE) Makefile
+	$(CC) -o $@ $<
 
 all: $(BINS)
 
 install: all
 	mkdir -p $(DESTDIR)$(NSSDIR)
 	install -m 0644 $(MODULE) $(DESTDIR)$(NSSDIR)/$(MODULE)
+	install -g docker -m 2755 inspect $(DESTDIR)$(BINDIR)/dockerinspect
 	ldconfig
 
 clean:
