@@ -36,7 +36,7 @@ all: $(BINS)
 install: all
 	mkdir -p $(DESTDIR)$(NSSDIR)
 	install -m 0644 $(MODULE) $(DESTDIR)$(NSSDIR)/$(MODULE)
-	install -g docker -m 2755 inspect $(DESTDIR)$(BINDIR)/dockerinspect
+	install -g docker -m 2755 inspect $(DESTDIR)$(BINDIR)/dockerip
 	ldconfig
 
 clean:

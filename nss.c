@@ -81,7 +81,7 @@ static gboolean lookup_container_ip(const char* name, struct in_addr* addr)
     name_s = g_strdup(name);
     *strrchr(name_s, '.') = '\0';
 
-    char* argv[] = { "/usr/bin/dockerinspect", name_s, NULL, };
+    char* argv[] = { "/usr/bin/dockerip", name_s, NULL, };
 
     if (!g_spawn_sync(NULL, argv, NULL,
                       G_SPAWN_STDERR_TO_DEV_NULL | G_SPAWN_SEARCH_PATH, NULL,
