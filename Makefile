@@ -15,7 +15,7 @@ MODULE = libnss_docker.so.2
 
 BINS = \
 	$(MODULE) \
-	test inspect
+	test dockerip
 
 $(MODULE): $(OBJS) Makefile
 	$(CC) -fPIC -shared -o $@ -Wl,-soname,$@ $< $(LDFLAGS)
@@ -24,21 +24,21 @@ TEST_OBJS = \
 	test.o
 
 INSPECT_OBJS = \
-	inspect.o
+	dockerip.o
 
 test: $(TEST_OBJS) $(MODULE) Makefile
 	$(CC) -o $@ $< $(LDFLAGS)
 
-inspect: $(INSPECT_OBJS) $(MODULE) Makefile
+dockerip: $(INSPECT_OBJS) $(MODULE) Makefile
 	$(CC) -o $@ $<
 	$(STRIP) $@
 
 all: $(BINS)
 
 install: all
-	mkdir -p $(DESTDIR)$(NSSDIR)
+	mkdir -p $(DESTDIR)$(NSSDIR) $(DESTDIR)$(BINDIR)
 	install -m 0644 $(MODULE) $(DESTDIR)$(NSSDIR)/$(MODULE)
-	install -g docker -m 2755 inspect $(DESTDIR)$(BINDIR)/dockerip
+	install -g docker -m 2755 dockerip $(DESTDIR)$(BINDIR)/dockerip
 	ldconfig
 
 clean:
