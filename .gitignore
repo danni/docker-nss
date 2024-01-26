@@ -2,3 +2,4 @@
 *.o
 /libnss_docker.so.2
 /test
+/dockerip

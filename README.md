@@ -8,7 +8,9 @@ This is still a work in progress!
 Installing
 ==========
 
-    git clone git@github.com:danni/docker-nss.git
+Ensure `make`, `gcc`, and `libglib2.0-dev` are installed on the system.
+
+    git clone git@github.com:weng-lab/docker-nss.git
     cd docker-nss
     sudo make all install
     sudo sed -i -re 's/^(hosts: .*$)/\1 docker/' /etc/nsswitch.conf
